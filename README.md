@@ -79,7 +79,6 @@ chore(#7890): update dependencies
 - Use present tense ("add feature" not "added feature")
 - Use imperative mood ("move cursor to..." not "moves cursor to...")
 
-```
 
 ### Commit Message Rules
 
@@ -131,4 +130,3 @@ The following checks run automatically on every commit:
 3. **Code quality**: ESLint with security and best practice rules
 
 All checks must pass before code can be committed or merged.
-```
