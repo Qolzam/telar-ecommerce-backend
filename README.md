@@ -45,7 +45,6 @@ This project uses **Conventional Commits** specification for commit messages. Al
 
 ### Examples
 
-````bash
 ```bash
 feat(#2344): add user authentication endpoint
 fix(#1205): resolve memory leak in database connection
@@ -54,7 +53,7 @@ style(#4567): fix code formatting issues
 refactor(#5678): simplify user validation logic
 test(#6789): add unit tests for auth middleware
 chore(#7890): update dependencies
-````
+```
 
 ### Commit Types
 
