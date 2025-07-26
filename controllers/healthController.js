@@ -1,13 +1,19 @@
-// Controller to handle the GET /api/health endpoint
-export const healthCheck = (req, res) => {
-  try {
-    res.status(200).json({
-      // Send a 200 OK response with status and timestamp
-      status: 'ok',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    // On error, send 500 Internal Server Error with a generic message
-    res.status(500).json({ error: 'Internal server error' });
+export const healthController = {
+  /**
+   * GET /api/health controller
+   * Returns API status and current timestamp in ISO format.
+   *
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
+  getHealth: (req, res) => {
+    try {
+      res.status(200).json({
+        status: 'ok',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Internal server error' });
+    }
   }
 };
