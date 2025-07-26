@@ -79,7 +79,6 @@ chore(#7890): update dependencies
 - Use present tense ("add feature" not "added feature")
 - Use imperative mood ("move cursor to..." not "moves cursor to...")
 
-
 ### Commit Message Rules
 
 - Type must be lowercase
