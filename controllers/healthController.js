@@ -1,11 +1,11 @@
-export const healthController = {
-  /**
-   * GET /api/health controller
-   * Returns API status and current timestamp in ISO format.
-   *
-   * @param {import('express').Request} req
-   * @param {import('express').Response} res
-   */
+/**
+ * GET /api/health controller
+ * Returns API status and current timestamp in ISO format.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
+const healthController = {
   getHealth: (req, res) => {
     try {
       res.status(200).json({
@@ -17,3 +17,5 @@ export const healthController = {
     }
   }
 };
+
+module.exports = healthController;
