@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 
+const healthRoutes = require('./routes/health');
+
 const app = express();
 const PORT = process.env.PORT || 8080;
 
@@ -16,6 +18,8 @@ app.get('/', (req, res) => {
 app.get('/api', (req, res) => {
   res.json({ message: 'Welcome to the API!' });
 });
+
+app.use('/api', healthRoutes);
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
