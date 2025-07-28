@@ -6,14 +6,14 @@
  * @param {import('express').Response} res
  */
 const healthController = {
-  getHealth: (req, res) => {
+  getHealth: (req, res, next) => {
     try {
       res.status(200).json({
         status: 'ok',
         timestamp: new Date().toISOString()
       });
     } catch (error) {
-      res.status(500).json({ error: 'Internal server error' });
+      next(error);
     }
   }
 };
