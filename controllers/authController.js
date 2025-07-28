@@ -5,6 +5,7 @@ const authController = {
       const { fullName, email, password } = req.body;
 
       // Remove this validation after use the password variable. The password validation implement in auth validation
+      // I use this implementation to fix the  variable  variable unused problem
       if (!password || password.length < 8) {
         return res.status(400).json({
           status: false,
