@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 
 import healthRoutes from './routes/health.js';
+import { errorHandler } from './middlewares/errorHandler.js';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -20,6 +21,8 @@ app.get('/api', (req, res) => {
 });
 
 app.use('/api', healthRoutes);
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
