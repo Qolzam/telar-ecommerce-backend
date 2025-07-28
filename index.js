@@ -1,7 +1,7 @@
-const express = require('express');
-const cors = require('cors');
+import express from 'express';
+import cors from 'cors';
 
-const healthRoutes = require('./routes/health');
+import healthRoutes from './routes/health.js';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
