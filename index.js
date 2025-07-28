@@ -22,7 +22,7 @@ app.get('/api', (req, res) => {
 });
 
 app.use('/api', healthRoutes);
-app.use('/api', authRoutes);
+app.use('/api/auth', authRoutes);
 app.use(errorHandler);
 
 app.listen(PORT, () => {
