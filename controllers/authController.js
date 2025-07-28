@@ -1,5 +1,5 @@
 const authController = {
-  register: async (req, res) => {
+  register: async (req, res, next) => {
     try {
       // Request full name, email and password from the body
       const { fullName, email, password } = req.body;
@@ -22,7 +22,7 @@ const authController = {
         }
       });
     } catch (error) {
-      res.status(500).json({ error: 'Internal server error' });
+      next(error);
     }
   }
 };
