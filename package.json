@@ -1,6 +1,7 @@
 {
   "name": "ecommerce-backend",
   "version": "1.0.0",
+  "type": "module",
   "description": "Ecommerce backend API built with Express",
   "main": "index.js",
   "scripts": {
