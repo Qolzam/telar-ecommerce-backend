@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 
 import healthRoutes from './routes/health.js';
+import authRoutes from './routes/auth.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 
 const app = express();
@@ -21,7 +22,7 @@ app.get('/api', (req, res) => {
 });
 
 app.use('/api', healthRoutes);
-
+app.use('/api', authRoutes);
 app.use(errorHandler);
 
 app.listen(PORT, () => {
