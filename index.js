@@ -1,31 +1,49 @@
 import express from 'express';
 import cors from 'cors';
+import dotenv from 'dotenv';
 
-import healthRoutes from './routes/health.js';
-import authRoutes from './routes/auth.js';
+import configureRoutes from './routes/index.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import { testConnection } from './lib/database.js';
+
+// Load environment variables
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// middleware to handle CORS and JSON requests
+// Middleware to handle CORS and JSON requests
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('Hello, world! 🌍');
-});
+// Configure all routes
+configureRoutes(app);
 
-// Example route
-app.get('/api', (req, res) => {
-  res.json({ message: 'Welcome to the API!' });
-});
-
-app.use('/api', healthRoutes);
-app.use('/api/auth', authRoutes);
+// Error handling middleware (must be last)
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+// Start server with database connection test
+const startServer = async () => {
+  try {
+    // Test database connection before starting server
+    const dbConnected = await testConnection();
+
+    if (!dbConnected) {
+      // eslint-disable-next-line no-console
+      console.warn('⚠️  Starting server without database connection');
+    }
+
+    app.listen(PORT, () => {
+      // eslint-disable-next-line no-console
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
+      // eslint-disable-next-line no-console
+      console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+    });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('❌ Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
