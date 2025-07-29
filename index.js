@@ -1,7 +1,9 @@
-const express = require('express');
-const cors = require('cors');
+import express from 'express';
+import cors from 'cors';
 
-const healthRoutes = require('./routes/health');
+import healthRoutes from './routes/health.js';
+import authRoutes from './routes/auth.js';
+import { errorHandler } from './middlewares/errorHandler.js';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -20,6 +22,8 @@ app.get('/api', (req, res) => {
 });
 
 app.use('/api', healthRoutes);
+app.use('/api/auth', authRoutes);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console

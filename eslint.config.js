@@ -1,7 +1,12 @@
-const js = require('@eslint/js');
-const airbnbBase = require('eslint-config-airbnb-base');
+import js from '@eslint/js';
+import airbnbBase from 'eslint-config-airbnb-base';
+import eslintPluginImport from 'eslint-plugin-import';
+import eslintPluginNode from 'eslint-plugin-node';
+import eslintPluginSecurity from 'eslint-plugin-security';
+import eslintPluginPromise from 'eslint-plugin-promise';
+import eslintPluginPrettier from 'eslint-plugin-prettier';
 
-module.exports = [
+export default [
   js.configs.recommended,
   {
     files: ['**/*.js'],
@@ -27,11 +32,11 @@ module.exports = [
       }
     },
     plugins: {
-      import: require('eslint-plugin-import'),
-      node: require('eslint-plugin-node'),
-      security: require('eslint-plugin-security'),
-      promise: require('eslint-plugin-promise'),
-      prettier: require('eslint-plugin-prettier')
+      import: eslintPluginImport,
+      node: eslintPluginNode,
+      security: eslintPluginSecurity,
+      promise: eslintPluginPromise,
+      prettier: eslintPluginPrettier
     },
     rules: {
       // Extend Airbnb base rules
