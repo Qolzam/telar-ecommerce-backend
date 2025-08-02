@@ -1,5 +1,5 @@
-import prisma from '../lib/database';
-import { hashPassword } from '../lib/utils';
+import prisma from '../lib/database.js';
+import { hashPassword } from '../lib/utils.js';
 
 /**
  * User service
