@@ -2,14 +2,19 @@ import { validationResult } from 'express-validator';
 
 export const validate = (req, res, next) => {
   const errors = validationResult(req);
-  const mappedErrors = {};
 
-  if (Object.keys(errors.errors).length === 0) {
-    next();
-  } else {
-    errors.errors.map(error => {
-      mappedErrors[error.path] = error.msg;
-    });
-    res.status(400).json(mappedErrors);
+  if (errors.isEmpty()) {
+    return next();
   }
+
+  const formattedErrors = errors.array().map(error => ({
+    field: error.path,
+    message: error.msg
+  }));
+
+  return res.status(400).json({
+    status: false,
+    message: 'Validation failed',
+    errors: formattedErrors
+  });
 };
