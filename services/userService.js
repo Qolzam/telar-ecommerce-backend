@@ -40,7 +40,14 @@ class UserService {
   async createUser(fullName, email, password) {
     const hashedPassword = await hashPassword(password);
 
-    const user = await prisma.user.creat({
+    const existingUser = await this.getUserByEmail(email);
+    if (existingUser) {
+      const error = new Error('Email already exists');
+      error.code = 'EMAIL_EXISTS';
+      throw error;
+    }
+
+    const user = await prisma.user.create({
       data: {
         fullName,
         email,
