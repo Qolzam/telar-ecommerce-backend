@@ -5,7 +5,7 @@
  * Use these validators to ensure data consistency across the application.
  */
 
-import { body, param, query } from 'express-validator';
+import { body, param, query, validationResult } from 'express-validator';
 
 // =============================================================================
 // USER VALIDATION
@@ -264,7 +264,6 @@ export const validationErrorResponse = errors => ({
  * Middleware to handle validation errors
  */
 export const handleValidationErrors = (req, res, next) => {
-  const { validationResult } = require('express-validator');
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
