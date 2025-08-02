@@ -37,7 +37,7 @@ class UserService {
    * Create new user
    */
 
-  async createUser(fullName, email, password) {
+  async createUser({ fullName, email, password }) {
     const hashedPassword = await hashPassword(password);
 
     const existingUser = await this.getUserByEmail(email);
