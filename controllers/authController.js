@@ -1,5 +1,4 @@
 import userService from '../services/userService.js';
-import { comparePassword } from '../lib/utils.js';
 import { generateToken } from '../utils/generateToken.js';
 
 const authController = {
@@ -35,6 +34,8 @@ const authController = {
 
       const user = await userService.AuthenticateUser(email, password);
       const token = generateToken(user);
+
+      // eslint-disable-next-line no-unused-vars
       const { password: _, ...userWithoutPassword } = user;
 
       res.json({
