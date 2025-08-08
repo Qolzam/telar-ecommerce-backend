@@ -1,5 +1,5 @@
 import userService from '../services/userService.js';
-import { generateToken } from '../utils/generateToken.js';
+import { generateToken } from '../lib/utils.js';
 
 const authController = {
   register: async (req, res, next) => {
