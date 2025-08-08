@@ -1,5 +1,5 @@
 import prisma from '../lib/database.js';
-import { hashPassword } from '../lib/utils.js';
+import { comparePassword, hashPassword } from '../lib/utils.js';
 
 /**
  * User service
@@ -77,6 +77,28 @@ class UserService {
   async emailExists(email) {
     const user = await this.getUserByEmail(email);
     return !!user;
+  }
+
+  /**
+   * Authenticate user for login
+   */
+
+  async AuthenticateUser(email, password) {
+    const user = await this.getUserByEmail(email);
+    if (!user) {
+      const error = new Error('Invalid email or password');
+      error.code = 'INVALID_CREDENTIALS';
+      throw error;
+    }
+
+    const isPasswordValid = await comparePassword(password, user.password);
+    if (!isPasswordValid) {
+      const error = new Error('Invalid email or password');
+      error.code = 'INVALID_CREDENTIALS';
+      throw error;
+    }
+
+    return user;
   }
 }
 
