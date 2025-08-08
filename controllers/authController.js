@@ -34,7 +34,7 @@ const authController = {
       const { email, password } = req.body;
 
       const user = await userService.AuthenticateUser(email, password);
-      const token = generateToken(user);
+      const { token, expiresIn } = generateToken(user);
 
       // eslint-disable-next-line no-unused-vars
       const { password: _, ...userWithoutPassword } = user;
@@ -45,7 +45,7 @@ const authController = {
         data: {
           user: userWithoutPassword,
           token,
-          expiresIn: jwtExpiresIn
+          expiresIn
         }
       });
     } catch (error) {
