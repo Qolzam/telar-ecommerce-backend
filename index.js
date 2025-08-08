@@ -1,16 +1,13 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 
+import { port } from './config/keys.js';
 import configureRoutes from './routes/index.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { testConnection } from './lib/database.js';
 
-// Load environment variables
-dotenv.config();
-
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = port || 8080;
 
 // Middleware to handle CORS and JSON requests
 app.use(cors());
