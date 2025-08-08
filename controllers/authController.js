@@ -1,6 +1,5 @@
 import userService from '../services/userService.js';
 import { generateToken } from '../lib/utils.js';
-import { jwtExpiresIn } from '../config/keys.js';
 
 const authController = {
   register: async (req, res, next) => {
