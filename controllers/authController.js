@@ -1,4 +1,6 @@
 import userService from '../services/userService.js';
+import { comparePassword } from '../lib/utils.js';
+import { generateToken } from '../utils/generateToken.js';
 
 const authController = {
   register: async (req, res, next) => {
@@ -21,6 +23,34 @@ const authController = {
           status: false,
           message: 'Email already exists',
           code: 'EMAIL_EXISTS'
+        });
+      }
+      next(error);
+    }
+  },
+
+  login: async (req, res, next) => {
+    try {
+      const { email, password } = req.body;
+
+      const user = await userService.AuthenticateUser(email, password);
+      const token = generateToken(user);
+      const { password: _, ...userWithoutPassword } = user;
+
+      res.json({
+        status: true,
+        message: 'Login successful',
+        data: {
+          user: userWithoutPassword,
+          token
+        }
+      });
+    } catch (error) {
+      if (error.code === 'INVALID_CREDENTIALS') {
+        return res.status(401).json({
+          status: false,
+          message: 'Invalid email or password',
+          code: 'INVALID_CREDENTIALS'
         });
       }
       next(error);
