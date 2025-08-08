@@ -2,6 +2,10 @@ import userService from '../services/userService.js';
 import { generateToken } from '../lib/utils.js';
 
 const authController = {
+  /**
+   *  Register a user
+   */
+
   register: async (req, res, next) => {
     try {
       // Request full name, email and password from the body
@@ -27,6 +31,10 @@ const authController = {
       next(error);
     }
   },
+
+  /**
+   *  User login
+   */
 
   login: async (req, res, next) => {
     try {
