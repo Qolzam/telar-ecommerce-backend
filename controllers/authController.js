@@ -1,5 +1,6 @@
 import userService from '../services/userService.js';
 import { generateToken } from '../lib/utils.js';
+import { jwtExpiresIn } from '../config/keys.js';
 
 const authController = {
   register: async (req, res, next) => {
@@ -43,7 +44,8 @@ const authController = {
         message: 'Login successful',
         data: {
           user: userWithoutPassword,
-          token
+          token,
+          expiresIn: jwtExpiresIn
         }
       });
     } catch (error) {
