@@ -1,5 +1,6 @@
 import userService from '../services/userService.js';
 import { generateToken } from '../lib/utils.js';
+import { toPublicUser } from '../serializers/userPublic.js';
 
 const authController = {
   /**
@@ -43,14 +44,13 @@ const authController = {
       const user = await userService.AuthenticateUser(email, password);
       const { token, expiresIn } = generateToken(user);
 
-      // eslint-disable-next-line no-unused-vars
-      const { password: _, ...userWithoutPassword } = user;
+      const userPublic = toPublicUser(user);
 
       res.json({
         status: true,
         message: 'Login successful',
         data: {
-          user: userWithoutPassword,
+          user: userPublic,
           token,
           expiresIn
         }
