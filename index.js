@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 
-import { port } from './config/keys.js';
+import { port } from './config/index.js';
 import configureRoutes from './routes/index.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { testConnection } from './lib/database.js';
