@@ -1,5 +1,11 @@
 import prisma from '../lib/database.js';
-import { comparePassword, hashPassword } from '../lib/utils.js';
+import {
+  comparePassword,
+  hashPassword,
+  generateRandomToken,
+  hashToken,
+  resetTokenTtlMinutes
+} from '../lib/utils.js';
 
 /**
  * User service
@@ -99,6 +105,26 @@ class UserService {
     }
 
     return user;
+  }
+
+  async generateResetToken(email) {
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    const rawToken = generateRandomToken(32);
+    const tokenHash = hashToken(rawToken);
+    const expiresAt = new Date(Date.now() + Number(resetTokenTtlMinutes ?? 60) * 60 * 1000);
+
+    if (user) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          resetToken: tokenHash,
+          resetTokenExpiry: expiresAt
+        }
+      });
+    }
+
+    return { token: rawToken, expiresAt, emailExists: !!user };
   }
 }
 
