@@ -2,7 +2,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const { PORT, JWT_SECRET, DATABASE_URL, JWT_EXPIRES_IN } = process.env;
+const { PORT, JWT_SECRET, DATABASE_URL, JWT_EXPIRES_IN, SENDER_EMAIL, EMAIL_PASSWORD } =
+  process.env;
 
 export const port = PORT;
 export const databaseUrl = DATABASE_URL;
