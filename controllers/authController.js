@@ -1,6 +1,7 @@
-import userService from '../services/userService.js';
-import { generateToken } from '../lib/utils.js';
+import userService, { generateResetToken } from '../services/userService.js';
+import { generateToken, sendEmail } from '../lib/utils.js';
 import { toPublicUser } from '../serializers/userPublic.js';
+import { port } from '../config/index.js';
 
 const authController = {
   /**
@@ -63,6 +64,33 @@ const authController = {
           code: 'INVALID_CREDENTIALS'
         });
       }
+      next(error);
+    }
+  },
+
+  forgotPassword: async (req, res, next) => {
+    try {
+      const { email } = req.body;
+
+      const { token } = await generateResetToken(email);
+      const resetUrl = `http://localhost:${port}/reset-password?token=${encodeURIComponent(token)}`;
+
+      await sendEmail(
+        email,
+        'Password Reset Instructions',
+        `
+          <p>We received a request to reset your password.</p>
+          <p>Click the link below to set a new password:</p>
+          <p><a href="${resetUrl}">${resetUrl}</a></p>
+          <p>If you did not request this, you can safely ignore this email.</p>
+        `
+      );
+
+      return res.json({
+        status: true,
+        message: 'If that email exists, a reset link has been sent'
+      });
+    } catch (error) {
       next(error);
     }
   }
