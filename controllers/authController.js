@@ -1,4 +1,7 @@
-import userService, { generateResetToken } from '../services/userService.js';
+import userService, {
+  generateResetToken,
+  resetPassword as resetPasswordsvc
+} from '../services/userService.js';
 import { generateToken, sendEmail } from '../lib/utils.js';
 import { toPublicUser } from '../serializers/userPublic.js';
 import { port } from '../config/index.js';
@@ -93,7 +96,31 @@ const authController = {
     } catch (error) {
       next(error);
     }
-  }
+  },
+
+  resetPassword: async (req, res) => {
+    const { token, password } = req.body;
+
+    try {
+      await resetPasswordSvc(token, password);
+      return res.json({
+        status: true,
+        message: 'Password reset successful'
+      });
+    } catch (err) {
+      if (err.code === 'INVALID_TOKEN') {
+        return res.status(400).json({
+          status: false,
+          message: 'Invalid or expired token',
+          code: 'INVALID_TOKEN'
+        });
+      }
+      return res.status(err.status || 400).json({
+        status: false,
+        message: err.message || 'Password reset failed'
+      });
+    }
+  };
 };
 
 export default authController;
