@@ -98,7 +98,7 @@ const authController = {
     }
   },
 
-  resetPassword: async (req, res) => {
+  resetPassword: async (req, res, next) => {
     const { token, password } = req.body;
 
     try {
@@ -107,18 +107,15 @@ const authController = {
         status: true,
         message: 'Password reset successful'
       });
-    } catch (err) {
-      if (err.code === 'INVALID_TOKEN') {
+    } catch (error) {
+      if (error.code === 'INVALID_TOKEN') {
         return res.status(400).json({
           status: false,
           message: 'Invalid or expired token',
           code: 'INVALID_TOKEN'
         });
       }
-      return res.status(err.status || 400).json({
-        status: false,
-        message: err.message || 'Password reset failed'
-      });
+      next(error);
     }
   }
 };
