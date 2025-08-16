@@ -1,11 +1,6 @@
 import prisma from '../lib/database.js';
-import {
-  comparePassword,
-  hashPassword,
-  generateRandomToken,
-  hashToken,
-  resetTokenTtlMinutes
-} from '../lib/utils.js';
+import { comparePassword, hashPassword, generateRandomToken, hashToken } from '../lib/utils.js';
+import { resetTokenTtlMinutes } from '../config/index.js';
 
 /**
  * User service
