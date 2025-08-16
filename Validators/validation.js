@@ -34,6 +34,21 @@ export const validateUserLogin = [
   body('password').notEmpty().withMessage('Password is required')
 ];
 
+export const validateForgotPassword = [
+  body('email').isEmail().normalizeEmail().withMessage('Valid email is required')
+];
+
+export const validateResetPassword = [
+  body('token').isString().notEmpty().withMessage('Reset token is required'),
+  body('password')
+    .isString()
+    .isLength({ min: 8 })
+    .withMessage('Password must be at least 8 characters'),
+  body('confirmPassword')
+    .custom((v, { req }) => v === req.body.password)
+    .withMessage('Passwords must match')
+];
+
 // =============================================================================
 // PRODUCT VALIDATION
 // =============================================================================
