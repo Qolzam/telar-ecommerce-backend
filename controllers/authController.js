@@ -88,7 +88,8 @@ const authController = {
 
       return res.json({
         status: true,
-        message: 'If that email exists, a reset link has been sent'
+        message: 'A reset link has been sent',
+        data: email
       });
     } catch (error) {
       next(error);
