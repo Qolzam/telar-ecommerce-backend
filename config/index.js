@@ -9,3 +9,5 @@ export const port = PORT;
 export const databaseUrl = DATABASE_URL;
 export const jwtSecret = JWT_SECRET;
 export const jwtExpiresIn = JWT_EXPIRES_IN;
+export const senderEmail = SENDER_EMAIL;
+export const emailPassword = EMAIL_PASSWORD;
