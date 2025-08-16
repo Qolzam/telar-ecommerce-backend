@@ -1,7 +1,4 @@
-import userService, {
-  generateResetToken,
-  resetPassword as resetPasswordSvc
-} from '../services/userService.js';
+import userService from '../services/userService.js';
 import { generateToken, sendEmail } from '../lib/utils.js';
 import { toPublicUser } from '../serializers/userPublic.js';
 import { port } from '../config/index.js';
@@ -75,7 +72,7 @@ const authController = {
     try {
       const { email } = req.body;
 
-      const { token } = await generateResetToken(email);
+      const { token } = await userService.generateResetToken(email);
       const resetUrl = `http://localhost:${port}/reset-password?token=${encodeURIComponent(token)}`;
 
       await sendEmail(
@@ -102,7 +99,7 @@ const authController = {
     const { token, password } = req.body;
 
     try {
-      await resetPasswordSvc(token, password);
+      await userService.resetPassword(token, password);
       return res.json({
         status: true,
         message: 'Password reset successful'
