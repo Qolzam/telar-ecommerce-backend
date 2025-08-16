@@ -1,6 +1,6 @@
 import userService, {
   generateResetToken,
-  resetPassword as resetPasswordsvc
+  resetPassword as resetPasswordSvc
 } from '../services/userService.js';
 import { generateToken, sendEmail } from '../lib/utils.js';
 import { toPublicUser } from '../serializers/userPublic.js';
@@ -120,7 +120,7 @@ const authController = {
         message: err.message || 'Password reset failed'
       });
     }
-  };
+  }
 };
 
 export default authController;
