@@ -126,6 +126,38 @@ class UserService {
 
     return { token: rawToken, expiresAt, emailExists: !!user };
   }
+
+  async resetPassword(token, newPassword) {
+    const tokenHash = hashToken(token);
+    const now = new Date();
+
+    const user = await prisma.user.findFirst({
+      where: {
+        resetToken: tokenHash,
+        resetTokenExpiry: { gt: now }
+      }
+    });
+
+    if (!user) {
+      const err = new Error('Invalid or expired token');
+      err.code = 'INVALID_TOKEN';
+      err.status = 400;
+      throw err;
+    }
+
+    const hashed = await hashPassword(newPassword);
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashed,
+        resetToken: null,
+        resetTokenExpiry: null
+      }
+    });
+
+    return true;
+  }
 }
 
 export default new UserService();
