@@ -1,5 +1,5 @@
 import userService from '../services/userService.js';
-import { generateToken, sendEmail, generateRandomToken } from '../lib/utils.js';
+import { generateToken, sendEmail } from '../lib/utils.js';
 import { toPublicUser } from '../serializers/userPublic.js';
 import { port } from '../config/index.js';
 
