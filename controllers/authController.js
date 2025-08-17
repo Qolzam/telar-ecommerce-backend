@@ -89,7 +89,8 @@ const authController = {
       return res.json({
         status: true,
         message: 'A reset link has been sent',
-        data: resetEmail
+        data: resetEmail,
+        token // This token is the raw token
       });
     } catch (error) {
       next(error);
