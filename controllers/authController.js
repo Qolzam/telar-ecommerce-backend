@@ -1,5 +1,5 @@
 import userService from '../services/userService.js';
-import { generateToken, sendEmail } from '../lib/utils.js';
+import { generateToken, sendEmail, generateRandomToken } from '../lib/utils.js';
 import { toPublicUser } from '../serializers/userPublic.js';
 import { port } from '../config/index.js';
 
@@ -44,6 +44,7 @@ const authController = {
 
       const user = await userService.AuthenticateUser(email, password);
       const { token, expiresIn } = generateToken(user);
+      S;
 
       const userPublic = toPublicUser(user);
 
@@ -72,7 +73,7 @@ const authController = {
     try {
       const { email } = req.body;
 
-      const { token } = await userService.generateResetToken(email);
+      const { token } = await userService.generateRandomToken(email);
       const resetUrl = `http://localhost:${port}/reset-password?token=${encodeURIComponent(token)}`;
 
       await sendEmail(
@@ -89,7 +90,8 @@ const authController = {
       return res.json({
         status: true,
         message: 'A reset link has been sent',
-        data: email
+        data: email,
+        token
       });
     } catch (error) {
       next(error);
