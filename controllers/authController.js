@@ -72,10 +72,10 @@ const authController = {
     try {
       const { email } = req.body;
 
-      const { token } = await generateRandomToken(email);
+      const { token } = await userService.generateResetToken(email);
       const resetUrl = `http://localhost:${port}/reset-password?token=${encodeURIComponent(token)}`;
 
-      await sendEmail(
+      const resetEmail = await sendEmail(
         email,
         'Password Reset Instructions',
         `
@@ -89,8 +89,7 @@ const authController = {
       return res.json({
         status: true,
         message: 'A reset link has been sent',
-        data: email,
-        token
+        data: resetEmail
       });
     } catch (error) {
       next(error);
