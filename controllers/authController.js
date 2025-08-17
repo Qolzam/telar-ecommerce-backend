@@ -68,6 +68,10 @@ const authController = {
     }
   },
 
+  /**
+   * Forgot password
+   */
+
   forgotPassword: async (req, res, next) => {
     try {
       const { email } = req.body;
@@ -86,16 +90,21 @@ const authController = {
         `
       );
 
+      // Token and the reset email should remove in production
       return res.json({
         status: true,
         message: 'A reset link has been sent',
         data: resetEmail,
-        token // This token is the raw token
+        token
       });
     } catch (error) {
       next(error);
     }
   },
+
+  /**
+   * Reset password
+   */
 
   resetPassword: async (req, res, next) => {
     const { token, password } = req.body;
