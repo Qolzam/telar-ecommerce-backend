@@ -1,5 +1,5 @@
 import userService from '../services/userService.js';
-import { generateToken, sendEmail } from '../lib/utils.js';
+import { generateToken, sendEmail, generateRandomToken } from '../lib/utils.js';
 import { toPublicUser } from '../serializers/userPublic.js';
 import { port } from '../config/index.js';
 
@@ -72,7 +72,7 @@ const authController = {
     try {
       const { email } = req.body;
 
-      const { token } = await userService.generateRandomToken(email);
+      const { token } = await generateRandomToken(email);
       const resetUrl = `http://localhost:${port}/reset-password?token=${encodeURIComponent(token)}`;
 
       await sendEmail(
