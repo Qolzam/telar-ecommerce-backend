@@ -4,7 +4,9 @@ import { authController } from '../controllers/index.js';
 import {
   validateUserRegistration,
   handleValidationErrors,
-  validateUserLogin
+  validateUserLogin,
+  validateForgotPassword,
+  validateResetPassword
 } from '../validators/validation.js';
 
 const router = Router();
@@ -13,5 +15,18 @@ router.post('/register', validateUserRegistration, handleValidationErrors, authC
 
 // POST /api/login - login user
 router.post('/login', validateUserLogin, handleValidationErrors, authController.login);
+
+router.post(
+  '/forgot-password',
+  validateForgotPassword,
+  handleValidationErrors,
+  authController.forgotPassword
+);
+router.post(
+  '/reset-password',
+  validateResetPassword,
+  handleValidationErrors,
+  authController.resetPassword
+);
 
 export default router;

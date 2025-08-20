@@ -1,5 +1,6 @@
 import prisma from '../lib/database.js';
-import { comparePassword, hashPassword } from '../lib/utils.js';
+import { comparePassword, hashPassword, generateRandomToken, hashToken } from '../lib/utils.js';
+import { resetTokenTtlMinutes } from '../config/index.js';
 
 /**
  * User service
@@ -99,6 +100,58 @@ class UserService {
     }
 
     return user;
+  }
+
+  async generateResetToken(email) {
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    const rawToken = generateRandomToken(32);
+    const tokenHash = hashToken(rawToken);
+    const expiresAt = new Date(Date.now() + Number(resetTokenTtlMinutes ?? 60) * 60 * 1000);
+
+    if (user) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          resetToken: tokenHash,
+          resetTokenExpiry: expiresAt
+        }
+      });
+    }
+
+    return { token: rawToken, expiresAt, emailExists: !!user };
+  }
+
+  async resetPassword(token, newPassword) {
+    const tokenHash = hashToken(token);
+    const now = new Date();
+
+    const user = await prisma.user.findFirst({
+      where: {
+        resetToken: tokenHash,
+        resetTokenExpiry: { gt: now }
+      }
+    });
+
+    if (!user) {
+      const err = new Error('Invalid or expired token');
+      err.code = 'INVALID_TOKEN';
+      err.status = 400;
+      throw err;
+    }
+
+    const hashed = await hashPassword(newPassword);
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashed,
+        resetToken: null,
+        resetTokenExpiry: null
+      }
+    });
+
+    return true;
   }
 }
 

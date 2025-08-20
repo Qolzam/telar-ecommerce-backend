@@ -1,6 +1,7 @@
 import userService from '../services/userService.js';
-import { generateToken } from '../lib/utils.js';
+import { generateToken, sendEmail } from '../lib/utils.js';
 import { toPublicUser } from '../serializers/userPublic.js';
+import { port } from '../config/index.js';
 
 const authController = {
   /**
@@ -61,6 +62,65 @@ const authController = {
           status: false,
           message: 'Invalid email or password',
           code: 'INVALID_CREDENTIALS'
+        });
+      }
+      next(error);
+    }
+  },
+
+  /**
+   * Forgot password
+   */
+
+  forgotPassword: async (req, res, next) => {
+    try {
+      const { email } = req.body;
+
+      const { token } = await userService.generateResetToken(email);
+      const resetUrl = `http://localhost:${port}/reset-password?token=${encodeURIComponent(token)}`;
+
+      const resetEmail = await sendEmail(
+        email,
+        'Password Reset Instructions',
+        `
+          <p>We received a request to reset your password.</p>
+          <p>Click the link below to set a new password:</p>
+          <p><a href="${resetUrl}">${resetUrl}</a></p>
+          <p>If you did not request this, you can safely ignore this email.</p>
+        `
+      );
+
+      // Token and the reset email should remove in production
+      return res.json({
+        status: true,
+        message: 'A reset link has been sent',
+        data: resetEmail,
+        token
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * Reset password
+   */
+
+  resetPassword: async (req, res, next) => {
+    const { token, password } = req.body;
+
+    try {
+      await userService.resetPassword(token, password);
+      return res.json({
+        status: true,
+        message: 'Password reset successful'
+      });
+    } catch (error) {
+      if (error.code === 'INVALID_TOKEN') {
+        return res.status(400).json({
+          status: false,
+          message: 'Invalid or expired token',
+          code: 'INVALID_TOKEN'
         });
       }
       next(error);
