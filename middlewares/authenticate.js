@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-import { jwtSecret } from '../config';
+import { jwtSecret } from '../config/index.js';
 
 export const authenticate = async (req, res, next) => {
   try {
