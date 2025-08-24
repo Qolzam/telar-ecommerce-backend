@@ -4,6 +4,7 @@ import homeRoutes from './home.js';
 import healthRoutes from './health.js';
 import authRoutes from './auth.js';
 import productRoutes from './products.js';
+import userRoutes from './user.js';
 
 /**
  * Configure and mount all application routes
@@ -16,6 +17,7 @@ const configureRoutes = app => {
   apiRouter.use('/', healthRoutes);
   apiRouter.use('/auth', authRoutes);
   apiRouter.use('/products', productRoutes);
+  apiRouter.use('/user', userRoutes);
 
   app.use('/api', apiRouter);
 };
