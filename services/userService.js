@@ -34,6 +34,32 @@ class UserService {
     });
   }
 
+  async updateUser(id, data) {
+    if (data.email) {
+      const existingUser = await prisma.user.findFirst({
+        where: {
+          email: data.email,
+          NOT: { id: parseInt(id, 10) }
+        }
+      });
+
+      if (existingUser) {
+        const error = new Error('Email already exists');
+        error.code = 'EMAIL EXISTS';
+        throw error;
+      }
+
+      if (data.password) {
+        data.password = await hashPassword(data.password);
+      }
+
+      return prisma.user.update({
+        where: { id: parseInt(id, 10) },
+        data
+      });
+    }
+  }
+
   /**
    * Create new user
    */
