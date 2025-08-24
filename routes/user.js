@@ -6,13 +6,13 @@ import { validateUserProfileUpdate, handleValidationErrors } from '../validators
 
 const router = Router();
 
-router.get('/me', authenticate, userController.getUserProfile);
+router.get('/me', authenticate, userController.getProfile);
 router.put(
   '/me',
   authenticate,
   validateUserProfileUpdate,
   handleValidationErrors,
-  userController.updateUser
+  userController.updateProfile
 );
 
 export default router;
