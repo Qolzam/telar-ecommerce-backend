@@ -12,7 +12,7 @@ export const authenticate = async (req, res, next) => {
 
       if (payload) {
         req.user = {
-          _id: payload._id,
+          id: payload.id,
           fullName: payload.fullName,
           email: payload.email,
           role: payload.role
