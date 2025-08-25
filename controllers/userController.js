@@ -5,10 +5,11 @@ const userController = {
   getProfile: async (req, res, next) => {
     try {
       const user = await userService.getUserById(req.user.id);
+      const updatedUser = toPublicUser(user);
       res.json({
         status: true,
         message: 'Profile fetched successfully',
-        data: { user }
+        data: { updatedUser }
       });
     } catch (error) {
       next(error);
