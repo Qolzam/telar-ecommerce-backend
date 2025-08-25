@@ -1,3 +1,4 @@
+import { toPublicUser } from '../serializers/userPublic.js';
 import userService from '../services/userService.js';
 
 const userController = {
@@ -17,7 +18,8 @@ const userController = {
   updateProfile: async (req, res, next) => {
     try {
       const { fullName, email, password } = req.body;
-      const updatedUser = await userService.updateUser(req.user.id, { fullName, email, password });
+      const user = await userService.updateUser(req.user.id, { fullName, email, password });
+      const updatedUser = toPublicUser(user);
       res.json({
         status: true,
         message: 'Profile updated successfully',
