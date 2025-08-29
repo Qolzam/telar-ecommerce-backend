@@ -17,7 +17,7 @@ const configureRoutes = app => {
   apiRouter.use('/', healthRoutes);
   apiRouter.use('/auth', authRoutes);
   apiRouter.use('/products', productRoutes);
-  apiRouter.use('/user', userRoutes);
+  apiRouter.use('/users', userRoutes);
 
   app.use('/api', apiRouter);
 };
