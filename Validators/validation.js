@@ -29,6 +29,21 @@ export const validateUserRegistration = [
   })
 ];
 
+export const validateUserProfileUpdate = [
+  body('fullName')
+    .optional()
+    .isLength({ min: 2, max: 100 })
+    .withMessage('Full name must be between 2-100 characters'),
+
+  body('email').optional().isEmail().normalizeEmail().withMessage('Valid email is required'),
+
+  body('password')
+    .optional()
+    .isLength({ min: 8 })
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage('Password must be at least 8 characters with uppercase, lowercase, and number')
+];
+
 export const validateUserLogin = [
   body('email').isEmail().normalizeEmail().withMessage('Valid email is required'),
   body('password').notEmpty().withMessage('Password is required')
