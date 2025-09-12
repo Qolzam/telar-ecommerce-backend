@@ -50,6 +50,25 @@ interface PaginationInfo {
   next?: string; // URL for next page (for infinite scroll)
   previous?: string; // URL for previous page
 }
+```
+
+### JWT Authentication
+
+```typescript
+interface JwtPayload {
+  userId: number;
+  email: string;
+  role: 'USER' | 'ADMIN';
+  iat: number;
+  exp: number;
+}
+
+// Authentication Headers
+interface AuthHeaders {
+  Authorization: `Bearer ${string}`;
+  'Content-Type': 'application/json';
+  'X-API-Version': '1.0';
+}
 
 interface PaginatedResponse<T> {
   items: T[];

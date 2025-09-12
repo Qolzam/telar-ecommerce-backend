@@ -48,6 +48,23 @@ export interface PaginatedResponse<T> {
 }
 
 // =============================================================================
+// JWT AUTHENTICATION TYPES
+// =============================================================================
+
+export interface JwtPayload {
+  userId: number;
+  email: string;
+  role: UserRole;
+  iat: number;
+  exp: number;
+}
+
+export interface AuthenticatedRequest {
+  user: User;
+  token: string;
+}
+
+// =============================================================================
 // ENUMS
 // =============================================================================
 
@@ -466,6 +483,7 @@ export enum ErrorCodes {
   INVALID_CREDENTIALS = 'AUTH_001',
   TOKEN_EXPIRED = 'AUTH_002',
   UNAUTHORIZED = 'AUTH_003',
+  FORBIDDEN = 'AUTH_004',
 
   // Validation
   VALIDATION_ERROR = 'VAL_001',

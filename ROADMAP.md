@@ -18,22 +18,27 @@ This roadmap outlines the key milestones, modules, and tasks we plan to build �
 **Backend**
 
 - Node.js + Express (ES Module format)
-- Future: PostgreSQL or MongoDB
+- PostgreSQL with Prisma ORM
 - Authentication: JWT-based
+- Password hashing with bcrypt
 - Deployed on **Render.com**
 
 ---
 
 ## 🔰 Phase 1 – Foundation Setup
 
-| Area    | Goal                              | Status         |
-| ------- | --------------------------------- | -------------- |
-| UI      | Basic Auth Pages (Signup, Signin) | ✅ Done        |
-| Backend | Hello World API                   | ✅ Done        |
-| Backend | Register Endpoint (no DB)         | 🔄 In Progress |
-| Backend | Login Endpoint (no DB)            | 🔄 In Progress |
-| DevOps  | Vercel SPA Routing                | ✅ Done        |
-| DevOps  | Render + GitHub CI setup          | ✅ Done        |
+| Area    | Goal                              | Status |
+| ------- | --------------------------------- | ------ |
+| UI      | Basic Auth Pages (Signup, Signin) | ✅ Done |
+| Backend | Hello World API                   | ✅ Done |
+| Backend | User Registration with Database   | ✅ Done |
+| Backend | User Login with Database          | ✅ Done |
+| Backend | Password Hashing & Security       | ✅ Done |
+| Backend | API Documentation & Schema        | ✅ Done |
+| Backend | Database Schema & Prisma Setup    | ✅ Done |
+| Backend | Professional Dev Setup (ESLint, Prettier, Husky) | ✅ Done |
+| DevOps  | Vercel SPA Routing                | ✅ Done |
+| DevOps  | Render + GitHub CI setup          | ✅ Done |
 
 ---
 
