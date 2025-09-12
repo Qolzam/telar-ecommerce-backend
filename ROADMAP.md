@@ -27,18 +27,18 @@ This roadmap outlines the key milestones, modules, and tasks we plan to build �
 
 ## 🔰 Phase 1 – Foundation Setup
 
-| Area    | Goal                              | Status |
-| ------- | --------------------------------- | ------ |
-| UI      | Basic Auth Pages (Signup, Signin) | ✅ Done |
-| Backend | Hello World API                   | ✅ Done |
-| Backend | User Registration with Database   | ✅ Done |
-| Backend | User Login with Database          | ✅ Done |
-| Backend | Password Hashing & Security       | ✅ Done |
-| Backend | API Documentation & Schema        | ✅ Done |
-| Backend | Database Schema & Prisma Setup    | ✅ Done |
+| Area    | Goal                                             | Status  |
+| ------- | ------------------------------------------------ | ------- |
+| UI      | Basic Auth Pages (Signup, Signin)                | ✅ Done |
+| Backend | Hello World API                                  | ✅ Done |
+| Backend | User Registration with Database                  | ✅ Done |
+| Backend | User Login with Database                         | ✅ Done |
+| Backend | Password Hashing & Security                      | ✅ Done |
+| Backend | API Documentation & Schema                       | ✅ Done |
+| Backend | Database Schema & Prisma Setup                   | ✅ Done |
 | Backend | Professional Dev Setup (ESLint, Prettier, Husky) | ✅ Done |
-| DevOps  | Vercel SPA Routing                | ✅ Done |
-| DevOps  | Render + GitHub CI setup          | ✅ Done |
+| DevOps  | Vercel SPA Routing                               | ✅ Done |
+| DevOps  | Render + GitHub CI setup                         | ✅ Done |
 
 ---
 
