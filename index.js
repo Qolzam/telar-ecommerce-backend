@@ -4,10 +4,10 @@ import path from 'path';
 import express from 'express';
 import cors from 'cors';
 
-import { port } from './config/index.js';
-import configureRoutes from './routes/index.js';
-import { errorHandler } from './middlewares/errorHandler.js';
-import { testConnection } from './lib/database.js';
+import { port } from './src/config/index.js';
+import configureRoutes from './src/routes/index.js';
+import { errorHandler } from './src/middlewares/errorHandler.js';
+import { testConnection } from './src/lib/database.js';
 
 const app = express();
 const PORT = port || 8088;
