@@ -185,6 +185,116 @@ class ProductService {
     });
     return count === 0;
   }
+
+  async searchProducts(query, filters = {}, page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
+
+    const whereClause = {
+      isActive: true,
+      OR: [
+        {
+          name: {
+            contains: query,
+            mode: 'insensitive'
+          }
+        },
+        {
+          description: {
+            contains: query,
+            mode: 'insensitive'
+          }
+        }
+      ]
+    };
+
+    if (filters.categoryId) {
+      whereClause.categoryId = parseInt(filters.categoryId, 10);
+    }
+
+    if (filters.minPrice !== undefined) {
+      whereClause.price = { ...whereClause.price, gte: parseFloat(filters.minPrice) };
+    }
+
+    if (filters.maxPrice !== undefined) {
+      whereClause.price = { ...whereClause.price, lte: parseFloat(filters.maxPrice) };
+    }
+
+    if (filters.inStock) {
+      whereClause.stock = { gt: 0 };
+    }
+
+    let orderBy = { createdAt: 'desc' };
+    if (filters.sortBy) {
+      const sortOrder = filters.sortOrder === 'asc' ? 'asc' : 'desc';
+      orderBy = { [filters.sortBy]: sortOrder };
+    }
+
+    const [products, totalCount] = await Promise.all([
+      prisma.product.findMany({
+        skip,
+        take: limit,
+        where: whereClause,
+        include: {
+          category: {
+            select: {
+              id: true,
+              name: true,
+              slug: true
+            }
+          }
+        },
+        orderBy
+      }),
+      prisma.product.count({
+        where: whereClause
+      })
+    ]);
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return {
+      query,
+      results: products,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems: totalCount,
+        itemsPerPage: limit,
+        hasNext: page < totalPages,
+        hasPrevious: page > 1
+      },
+      filters: {
+        categories: [],
+        priceRange: { min: 0, max: 2000 },
+        avgRating: 4.2
+      },
+      suggestions: []
+    };
+  }
+
+  async getFeaturedProducts(limit = 8) {
+    const products = await prisma.product.findMany({
+      take: limit,
+      where: {
+        isActive: true,
+        stock: {
+          gt: 0
+        }
+      },
+      include: {
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true
+          }
+        }
+      },
+      orderBy: [{ createdAt: 'desc' }, { stock: 'desc' }]
+    });
+
+    return products;
+  }
 }
 
 export default new ProductService();

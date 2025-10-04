@@ -1,7 +1,7 @@
 # 📋 Telar eCommerce API Schema Documentation
 
-**Version:** 1.0.0  
-**Last Updated:** July 29, 2025
+**Version:** 1.1.0  
+**Last Updated:** December 2024
 
 This document defines the complete data schema and API contracts for the Telar eCommerce platform.
 
@@ -91,6 +91,9 @@ interface User {
   isActive: boolean;
   createdAt: string; // ISO 8601
   updatedAt: string; // ISO 8601
+  // Relations (optional, included when explicitly requested)
+  orders?: Order[];
+  carts?: Cart[];
 }
 
 interface UserProfile extends User {
@@ -219,6 +222,9 @@ interface Product {
   };
   createdAt: string;
   updatedAt: string;
+  // Relations (optional, included when explicitly requested)
+  orderItems?: OrderItem[];
+  cartItems?: CartItem[];
 }
 
 interface ProductSummary {
@@ -299,21 +305,22 @@ POST   /products/:id/images    # Upload product images (Admin)
 ```typescript
 interface CartItem {
   id: number;
+  cartId: string;
   productId: number;
   product: ProductSummary;
   quantity: number;
   unitPrice: number;
-  totalPrice: number;
 }
 
 interface Cart {
-  id: string; // Session or user-based ID
-  userId?: number;
+  id: string; // CUID identifier
+  userId?: number; // Null for guest carts
+  sessionId?: string; // For guest carts
   items: CartItem[];
   subtotal: number;
   tax: number;
   total: number;
-  itemCount: number;
+  createdAt: string;
   updatedAt: string;
 }
 ```
@@ -336,17 +343,30 @@ interface UpdateCartItemRequest {
 interface CartResponse {
   cart: Cart;
 }
+
+// Create Cart (for guest users)
+interface CreateCartRequest {
+  sessionId?: string;
+}
+
+// Merge Guest Cart with User Cart
+interface MergeCartRequest {
+  guestCartId: string;
+  userId: number;
+}
 ```
 
 ### Cart API Endpoints
 
 ```http
 GET    /cart                   # Get current cart
+POST   /cart                   # Create new cart (for guest users)
 POST   /cart/items             # Add item to cart
 PUT    /cart/items/:id         # Update cart item quantity
 DELETE /cart/items/:id         # Remove item from cart
 DELETE /cart                   # Clear cart
 POST   /cart/merge             # Merge guest cart with user cart
+GET    /cart/:id               # Get cart by ID (for guest carts)
 ```
 
 ---
@@ -362,6 +382,9 @@ interface Order {
   userId: number;
   status: 'PENDING' | 'CONFIRMED' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
   total: number;
+  transactionId: string | null; // Payment transaction ID
+  paymentTimestamp: string | null; // When payment was completed
+  notes: string | null; // Order notes/comments
   items: OrderItem[];
   shippingAddress: Address;
   billingAddress: Address;
@@ -413,6 +436,21 @@ interface OrdersResponse {
   orders: OrderSummary[];
   pagination: PaginationInfo;
 }
+
+// Update Order Status (Admin)
+interface UpdateOrderStatusRequest {
+  status: Order['status'];
+  notes?: string;
+  transactionId?: string;
+  paymentTimestamp?: string;
+}
+
+// Confirm Order by Order Number
+interface ConfirmOrderRequest {
+  transactionId: string;
+  paymentTimestamp?: string;
+  notes?: string;
+}
 ```
 
 ### Order API Endpoints
@@ -423,7 +461,9 @@ GET    /orders/:id             # Get order details
 POST   /orders                 # Create order (checkout)
 PUT    /orders/:id/status      # Update order status (Admin)
 POST   /orders/:id/cancel      # Cancel order
+POST   /orders/confirm/:orderNo # Confirm order by order number
 GET    /admin/orders           # List all orders (Admin)
+GET    /admin/orders/:id       # Get order details (Admin)
 ```
 
 ---
@@ -707,6 +747,15 @@ interface RateLimit {
 ---
 
 ## 📝 Change Log
+
+### Version 1.1.0 - December 2024
+
+- **Enhanced Order Management**: Added `transactionId`, `paymentTimestamp`, and `notes` fields to Order entity
+- **Cart System**: Complete cart management with guest cart support
+- **New Entities**: Added Cart and CartItem models with full CRUD operations
+- **Enhanced Relations**: Updated User and Product models with cart relations
+- **New DTOs**: Added CreateCartRequest, MergeCartRequest, UpdateOrderStatusRequest, ConfirmOrderRequest
+- **Extended API Endpoints**: Added cart creation, order confirmation, and enhanced order management endpoints
 
 ### Version 1.0.0 - July 29, 2025
 

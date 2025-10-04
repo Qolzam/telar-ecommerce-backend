@@ -45,19 +45,28 @@ class UserService {
 
       if (existingUser) {
         const error = new Error('Email already exists');
-        error.code = 'EMAIL EXISTS';
+        error.code = 'EMAIL_EXISTS';
         throw error;
       }
-
-      if (data.password) {
-        data.password = await hashPassword(data.password);
-      }
-
-      return prisma.user.update({
-        where: { id: parseInt(id, 10) },
-        data
-      });
     }
+
+    if (data.password) {
+      data.password = await hashPassword(data.password);
+    }
+
+    return prisma.user.update({
+      where: { id: parseInt(id, 10) },
+      data,
+      select: {
+        id: true,
+        email: true,
+        fullName: true,
+        role: true,
+        isActive: true,
+        createdAt: true,
+        updatedAt: true
+      }
+    });
   }
 
   /**

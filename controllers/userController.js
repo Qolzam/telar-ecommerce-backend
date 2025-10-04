@@ -7,7 +7,7 @@ const userController = {
       const user = await userService.getUserById(req.user.id);
       const updatedUser = toPublicUser(user);
       res.json({
-        status: true,
+        success: true,
         message: 'Profile fetched successfully',
         data: { updatedUser }
       });
@@ -22,7 +22,7 @@ const userController = {
       const user = await userService.updateUser(req.user.id, { fullName, email, password });
       const updatedUser = toPublicUser(user);
       res.json({
-        status: true,
+        success: true,
         message: 'Profile updated successfully',
         data: { user: updatedUser }
       });

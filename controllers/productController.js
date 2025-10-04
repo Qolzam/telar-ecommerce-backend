@@ -15,7 +15,7 @@ const productController = {
       const result = await productService.getAllProducts(page, limit);
 
       res.status(200).json({
-        status: true,
+        success: true,
         data: result
       });
     } catch (error) {
@@ -34,13 +34,13 @@ const productController = {
 
       if (!product) {
         return res.status(404).json({
-          status: false,
-          message: 'Product not found'
+          success: false,
+          error: 'Product not found'
         });
       }
 
       res.status(200).json({
-        status: true,
+        success: true,
         data: { product }
       });
     } catch (error) {
@@ -100,6 +100,67 @@ const productController = {
       res.status(200).json({
         status: true,
         data: result
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async searchProducts(req, res, next) {
+    try {
+      const { q: query = '' } = req.query;
+      const page = parseInt(req.query.page, 10) || 1;
+      const limit = parseInt(req.query.limit, 10) || 10;
+
+      const filters = {
+        categoryId: req.query.categoryId,
+        minPrice: req.query.minPrice ? parseFloat(req.query.minPrice) : undefined,
+        maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
+        inStock: req.query.inStock === 'true',
+        sortBy: req.query.sortBy,
+        sortOrder: req.query.sortOrder
+      };
+
+      const cleanFilters = {};
+      if (filters.categoryId !== undefined && filters.categoryId !== '') {
+        cleanFilters.categoryId = filters.categoryId;
+      }
+      if (filters.minPrice !== undefined) {
+        cleanFilters.minPrice = filters.minPrice;
+      }
+      if (filters.maxPrice !== undefined) {
+        cleanFilters.maxPrice = filters.maxPrice;
+      }
+      if (filters.inStock !== undefined) {
+        cleanFilters.inStock = filters.inStock;
+      }
+      if (filters.sortBy !== undefined && filters.sortBy !== '') {
+        cleanFilters.sortBy = filters.sortBy;
+      }
+      if (filters.sortOrder !== undefined && filters.sortOrder !== '') {
+        cleanFilters.sortOrder = filters.sortOrder;
+      }
+
+      const result = await productService.searchProducts(query, cleanFilters, page, limit);
+
+      res.status(200).json({
+        status: true,
+        data: result
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getFeaturedProducts(req, res, next) {
+    try {
+      const limit = parseInt(req.query.limit, 10) || 8;
+
+      const products = await productService.getFeaturedProducts(limit);
+
+      res.status(200).json({
+        status: true,
+        data: { products }
       });
     } catch (error) {
       next(error);

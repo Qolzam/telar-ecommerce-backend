@@ -32,7 +32,7 @@ types/
 2. **API Base URL**
 
    ```typescript
-   const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
+   const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8088/api';
    ```
 
 3. **Authentication Headers**
@@ -160,7 +160,7 @@ cp types/api-types.ts src/types/
 
 ```typescript
 class ApiClient {
-  private baseURL = 'http://localhost:8080/api';
+  private baseURL = 'http://localhost:8088/api';
   private token: string | null = null;
 
   setToken(token: string) {

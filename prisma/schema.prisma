@@ -24,6 +24,7 @@ model User {
 
   // Relations
   orders Order[]
+  carts  Cart[]
 
   @@map("users")
   @@index([resetToken])
@@ -60,18 +61,22 @@ model Product {
   // Relations
   category   Category    @relation(fields: [categoryId], references: [id])
   orderItems OrderItem[]
+  cartItems  CartItem[]
 
   @@map("products")
 }
 
 model Order {
-  id        Int         @id @default(autoincrement())
-  orderNo   String      @unique
-  userId    Int
-  status    OrderStatus @default(PENDING)
-  total     Decimal     @db.Decimal(10, 2)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id               Int         @id @default(autoincrement())
+  orderNo          String      @unique
+  userId           Int
+  status           OrderStatus @default(PENDING)
+  total            Decimal     @db.Decimal(10, 2)
+  transactionId    String?     // Payment transaction ID
+  paymentTimestamp DateTime?   // When payment was completed
+  notes            String?     // Order notes/comments
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
 
   // Relations
   user       User        @relation(fields: [userId], references: [id])
@@ -92,6 +97,40 @@ model OrderItem {
   product Product @relation(fields: [productId], references: [id])
 
   @@map("order_items")
+}
+
+model Cart {
+  id        String   @id @default(cuid())
+  userId    Int?     // Null for guest carts
+  sessionId String?  // For guest carts
+  subtotal  Decimal  @db.Decimal(10, 2) @default(0)
+  tax       Decimal  @db.Decimal(10, 2) @default(0)
+  total     Decimal  @db.Decimal(10, 2) @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user  User?      @relation(fields: [userId], references: [id])
+  items CartItem[]
+
+  @@map("carts")
+  @@index([userId])
+  @@index([sessionId])
+}
+
+model CartItem {
+  id        Int     @id @default(autoincrement())
+  cartId    String
+  productId Int
+  quantity  Int
+  unitPrice Decimal @db.Decimal(10, 2)
+
+  // Relations
+  cart    Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("cart_items")
+  @@unique([cartId, productId]) // Prevent duplicate products in same cart
 }
 
 enum UserRole {
