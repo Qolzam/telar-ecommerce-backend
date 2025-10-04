@@ -1,21 +1,20 @@
 import { Router } from 'express';
 
 import { authController } from '../controllers/index.js';
+import { authenticate } from '../middlewares/authenticate.js';
 import {
   validateUserRegistration,
   handleValidationErrors,
   validateUserLogin,
   validateForgotPassword,
-  validateResetPassword
+  validateResetPassword,
+  validateUserProfileUpdate
 } from '../validators/validation.js';
 
 const router = Router();
-// POST /api/register - Register a user
+
 router.post('/register', validateUserRegistration, handleValidationErrors, authController.register);
-
-// POST /api/login - login user
 router.post('/login', validateUserLogin, handleValidationErrors, authController.login);
-
 router.post(
   '/forgot-password',
   validateForgotPassword,
@@ -27,6 +26,17 @@ router.post(
   validateResetPassword,
   handleValidationErrors,
   authController.resetPassword
+);
+
+router.get('/me', authenticate, authController.getCurrentUser);
+router.post('/refresh', authenticate, authController.refreshToken);
+router.post('/logout', authenticate, authController.logout);
+router.put(
+  '/profile',
+  authenticate,
+  validateUserProfileUpdate,
+  handleValidationErrors,
+  authController.updateProfile
 );
 
 export default router;

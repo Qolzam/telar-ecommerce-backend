@@ -1,6 +1,6 @@
 /**
  * Telar eCommerce API Type Definitions
- * Version: 1.0.0
+ * Version: 1.1.0
  *
  * Shared TypeScript definitions for frontend and backend applications.
  * Import these types to ensure type safety across your application.
@@ -114,6 +114,9 @@ export interface User {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  // Relations (optional, included when explicitly requested)
+  orders?: Order[];
+  carts?: Cart[];
 }
 
 export interface UserProfile extends User {
@@ -195,6 +198,9 @@ export interface Product {
   category: ProductCategory;
   createdAt: string;
   updatedAt: string;
+  // Relations (optional, included when explicitly requested)
+  orderItems?: OrderItem[];
+  cartItems?: CartItem[];
 }
 
 export interface ProductSummary {
@@ -242,21 +248,22 @@ export interface ProductFilters {
 
 export interface CartItem {
   id: number;
+  cartId: string;
   productId: number;
   product: ProductSummary;
   quantity: number;
   unitPrice: number;
-  totalPrice: number;
 }
 
 export interface Cart {
-  id: string;
-  userId?: number;
+  id: string; // CUID identifier
+  userId?: number; // Null for guest carts
+  sessionId?: string; // For guest carts
   items: CartItem[];
   subtotal: number;
   tax: number;
   total: number;
-  itemCount: number;
+  createdAt: string;
   updatedAt: string;
 }
 
@@ -267,6 +274,15 @@ export interface AddToCartRequest {
 
 export interface UpdateCartItemRequest {
   quantity: number;
+}
+
+export interface CreateCartRequest {
+  sessionId?: string;
+}
+
+export interface MergeCartRequest {
+  guestCartId: string;
+  userId: number;
 }
 
 // =============================================================================
@@ -365,6 +381,9 @@ export interface Order {
   userId: number;
   status: OrderStatus;
   total: number;
+  transactionId: string | null; // Payment transaction ID
+  paymentTimestamp: string | null; // When payment was completed
+  notes: string | null; // Order notes/comments
   items: OrderItem[];
   shippingAddress: Address;
   billingAddress: Address;
@@ -390,6 +409,19 @@ export interface CheckoutRequest {
   shippingAddress: AddressRequest;
   billingAddress?: AddressRequest;
   paymentMethod: PaymentMethodRequest;
+}
+
+export interface UpdateOrderStatusRequest {
+  status: OrderStatus;
+  notes?: string;
+  transactionId?: string;
+  paymentTimestamp?: string;
+}
+
+export interface ConfirmOrderRequest {
+  transactionId: string;
+  paymentTimestamp?: string;
+  notes?: string;
 }
 
 // =============================================================================
@@ -518,6 +550,7 @@ export type CategoriesResponse = ApiResponse<{ categories: Category[] }>;
 export type ProductsResponse = ApiResponse<PaginatedResponse<ProductSummary>>;
 export type ProductResponse = ApiResponse<{ product: Product }>;
 export type CartResponse = ApiResponse<{ cart: Cart }>;
+export type CartsResponse = ApiResponse<PaginatedResponse<Cart>>;
 export type OrdersResponse = ApiResponse<PaginatedResponse<OrderSummary>>;
 export type OrderResponse = ApiResponse<{ order: Order }>;
 export type AddressesResponse = ApiResponse<{ addresses: Address[] }>;

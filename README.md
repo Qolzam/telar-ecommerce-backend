@@ -99,7 +99,7 @@ chore(#7890): update dependencies
 
 ## Environment Variables
 
-- `PORT` - Server port (default: 8080)
+- `PORT` - Server port (default: 8088)
 
 ## Contributing
 

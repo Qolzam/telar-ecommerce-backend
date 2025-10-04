@@ -44,39 +44,40 @@ This roadmap outlines the key milestones, modules, and tasks we plan to build �
 
 ## 🔨 Phase 2 – Core Auth & Admin Panel
 
-| Area     | Goal                                | Status  |
-| -------- | ----------------------------------- | ------- |
-| Backend  | JWT-based Login                     | 🔜 Next |
-| Backend  | JWT middleware & token verification | 🔜 Next |
-| Backend  | Role-based access control (RBAC)    | 🔜 Next |
-| UI Admin | Admin Dashboard Layout (MUI)        | 🔜 Next |
-| UI Admin | Product Management UI               | 🔜 Next |
-| UI Admin | User Management UI                  | 🔜 Next |
+| Area     | Goal                                | Status         |
+| -------- | ----------------------------------- | -------------- |
+| Backend  | JWT-based Login                     | ✅ Done        |
+| Backend  | JWT middleware & token verification | ✅ Done        |
+| Backend  | Role-based access control (RBAC)    | ✅ Done        |
+| UI Admin | Admin Dashboard Layout (MUI)        | ✅ Done        |
+| UI Admin | Product Management UI               | ✅ Done        |
+| UI Admin | User Management UI                  | 🔄 In Progress |
 
 ---
 
 ## 🛒 Phase 3 – Shop Experience
 
-| Area      | Goal                              | Status     |
-| --------- | --------------------------------- | ---------- |
-| UI Public | Home Page (Categories, Products)  | ⏳ Planned |
-| UI Public | Product Detail Page               | ⏳ Planned |
-| UI Public | Search, Filter, Sort              | ⏳ Planned |
-| Backend   | Product CRUD API                  | ⏳ Planned |
-| Backend   | Categories API                    | ⏳ Planned |
-| Backend   | Product Image Uploads (Render S3) | ⏳ Planned |
+| Area      | Goal                              | Status         |
+| --------- | --------------------------------- | -------------- |
+| UI Public | Home Page (Categories, Products)  | ✅ Done        |
+| UI Public | Product Detail Page               | ✅ Done        |
+| UI Public | Search, Filter, Sort              | ✅ Done        |
+| Backend   | Product CRUD API                  | ✅ Done        |
+| Backend   | Categories API                    | ✅ Done        |
+| Backend   | Product Image Uploads (Render S3) | 🔄 In Progress |
 
 ---
 
 ## 💳 Phase 4 – Checkout & Orders
 
-| Area        | Goal                             | Status     |
-| ----------- | -------------------------------- | ---------- |
-| UI          | Cart Page                        | ⏳ Planned |
-| UI          | Checkout Page                    | ⏳ Planned |
-| Backend     | Cart & Checkout API              | ⏳ Planned |
-| Backend     | Order Placement & Summary        | ⏳ Planned |
-| Integration | Stripe or PayPal Payment Gateway | ⏳ Planned |
+| Area        | Goal                             | Status         |
+| ----------- | -------------------------------- | -------------- |
+| UI          | Cart Page                        | ✅ Done        |
+| UI          | Checkout Page                    | ✅ Done        |
+| Backend     | Cart & Checkout API              | ✅ Done        |
+| Backend     | Order Placement & Summary        | ✅ Done        |
+| Integration | Custom Bank Gateway              | ✅ Done        |
+| Integration | Stripe or PayPal Payment Gateway | 🔄 In Progress |
 
 ---
 
