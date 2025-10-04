@@ -1,5 +1,6 @@
 /**
  * API Validation Utilities
+ * Location: /validators/validation.js (root level)
  *
  * Provides validation schemas and utilities that match the API schema documentation.
  * Use these validators to ensure data consistency across the application.

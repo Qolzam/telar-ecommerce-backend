@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import { authController } from '../controllers/index.js';
 import { authenticate } from '../middlewares/authenticate.js';
+// Import validation functions from validators directory
 import {
   validateUserRegistration,
   handleValidationErrors,
