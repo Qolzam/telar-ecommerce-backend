@@ -17,6 +17,7 @@ async function seedTestData() {
     });
 
     if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
       console.log('✅ Category created:', category.name);
     }
 
@@ -61,15 +62,18 @@ async function seedTestData() {
         create: productData
       });
       if (process.env.NODE_ENV !== 'production') {
+        // eslint-disable-next-line no-console
         console.log(`✅ Product created: ${product.name} - $${product.price}`);
       }
     }
 
     if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
       console.log('🎉 Test data seeded successfully!');
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
       console.error('❌ Error seeding test data:', error);
     }
   } finally {

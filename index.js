@@ -142,6 +142,7 @@ const startServer = async () => {
 
     setupSignalHandlers();
 
+    // eslint-disable-next-line no-console
     console.log('🔌 Testing database connection...');
     const dbConnected = await testConnection();
 
