@@ -1,5 +1,10 @@
 import prisma from '../lib/database.js';
 
+// Safety check for prisma initialization
+if (!prisma) {
+  throw new Error('Prisma client not initialized');
+}
+
 /**
  * Cart Service
  * Handles cart operations including guest and authenticated user carts

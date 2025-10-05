@@ -12,30 +12,30 @@ dotenv.config();
  */
 const sleep = promisify(setTimeout);
 
-let prisma;
-
 /**
  * Global Prisma client instance
  * Uses singleton pattern to prevent multiple instances in development
  */
-if (process.env.NODE_ENV === 'production') {
-  prisma = new PrismaClient({
-    log: ['error', 'warn'],
-    datasources: {
-      db: {
-        url: process.env.DATABASE_URL
+const prisma = (() => {
+  if (process.env.NODE_ENV === 'production') {
+    return new PrismaClient({
+      log: ['error', 'warn'],
+      datasources: {
+        db: {
+          url: process.env.DATABASE_URL
+        }
       }
-    }
-  });
-} else {
-  // In development, use a global variable so the Prisma Client isn't constantly re-instantiated
-  if (!global.prisma) {
-    global.prisma = new PrismaClient({
-      log: ['query', 'info', 'warn', 'error']
     });
+  } else {
+    // In development, use a global variable so the Prisma Client isn't constantly re-instantiated
+    if (!global.prisma) {
+      global.prisma = new PrismaClient({
+        log: ['query', 'info', 'warn', 'error']
+      });
+    }
+    return global.prisma;
   }
-  prisma = global.prisma;
-}
+})();
 
 /**
  * Test database connection with retry logic
@@ -103,5 +103,12 @@ const gracefulShutdown = async () => {
 
 process.on('SIGINT', gracefulShutdown);
 process.on('SIGTERM', gracefulShutdown);
+
+// Ensure prisma is always defined before export
+if (!prisma) {
+  // eslint-disable-next-line no-console
+  console.error('❌ Prisma client failed to initialize');
+  process.exit(1);
+}
 
 export default prisma;
