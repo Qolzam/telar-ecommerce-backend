@@ -1,4 +1,5 @@
 import cartService from '../services/cartService.js';
+import { isConnectionHealthy } from '../lib/database.js';
 
 /**
  * Cart Controller
@@ -11,6 +12,16 @@ const cartController = {
    */
   async getCart(req, res) {
     try {
+      // Check database connection health first
+      const isHealthy = await isConnectionHealthy();
+      if (!isHealthy) {
+        return res.status(503).json({
+          success: false,
+          error: 'Database connection unavailable',
+          code: 'DATABASE_UNAVAILABLE'
+        });
+      }
+
       const userId = req.user?.id || null;
       const sessionId = req.sessionID || req.headers['x-session-id'] || null;
 
@@ -21,6 +32,18 @@ const cartController = {
         data: { cart }
       });
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Cart getCart error:', error);
+
+      // Check if it's a database connection error
+      if (error.message.includes('connection') || error.message.includes('timeout')) {
+        return res.status(503).json({
+          success: false,
+          error: 'Database connection error',
+          code: 'DATABASE_CONNECTION_ERROR'
+        });
+      }
+
       res.status(500).json({
         success: false,
         error: 'Failed to retrieve cart'
@@ -34,6 +57,16 @@ const cartController = {
    */
   async addToCart(req, res) {
     try {
+      // Check database connection health first
+      const isHealthy = await isConnectionHealthy();
+      if (!isHealthy) {
+        return res.status(503).json({
+          success: false,
+          error: 'Database connection unavailable',
+          code: 'DATABASE_UNAVAILABLE'
+        });
+      }
+
       const { productId, quantity = 1 } = req.body;
 
       if (!productId || quantity <= 0) {
@@ -55,6 +88,22 @@ const cartController = {
         data: { cart: updatedCart }
       });
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Cart addToCart error:', error);
+
+      // Check if it's a database connection error
+      if (
+        error.message.includes('connection') ||
+        error.message.includes('timeout') ||
+        error.message.includes('Closed')
+      ) {
+        return res.status(503).json({
+          success: false,
+          error: 'Database connection error',
+          code: 'DATABASE_CONNECTION_ERROR'
+        });
+      }
+
       if (error.message.includes('not found') || error.message.includes('inactive')) {
         return res.status(404).json({
           success: false,
