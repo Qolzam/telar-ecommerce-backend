@@ -1,6 +1,11 @@
 import prisma from '../lib/database.js';
 import logger from '../lib/logger.js';
 
+// Safety check for prisma initialization
+if (!prisma) {
+  throw new Error('Prisma client not initialized');
+}
+
 /**
  * Category Service
  * Handles all category-related business logic
