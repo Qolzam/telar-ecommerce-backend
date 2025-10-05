@@ -1,8 +1,5 @@
-import { PrismaClient } from '@prisma/client';
-
+import prisma from '../lib/database.js';
 import logger from '../lib/logger.js';
-
-const prisma = new PrismaClient();
 
 /**
  * Category Service
