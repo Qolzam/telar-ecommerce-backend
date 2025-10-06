@@ -103,11 +103,51 @@ const setupSignalHandlers = () => {
   });
 };
 
+/* eslint-disable no-console */
+console.log('🚀 [INIT DEBUG] Starting CORS configuration...');
+console.log('🚀 [INIT DEBUG] Process environment variables:');
+console.log('🚀 [INIT DEBUG] - NODE_ENV:', process.env.NODE_ENV || 'NOT SET');
+console.log('🚀 [INIT DEBUG] - ALLOWED_ORIGINS:', process.env.ALLOWED_ORIGINS || 'NOT SET');
+console.log('🚀 [INIT DEBUG] - PORT:', process.env.PORT || 'NOT SET');
+
+const rawOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ['http://localhost:3000', 'http://localhost:5173'];
+
+const allowedOrigins = rawOrigins.map(origin => {
+  const trimmed = origin.trim();
+  // remove trailing slash if present
+  const cleaned = trimmed.endsWith('/') ? trimmed.slice(0, -1) : trimmed;
+  console.log(`🧹 [CORS DEBUG] Cleaning origin: "${origin}" -> "${cleaned}"`);
+  return cleaned;
+});
+
+console.log('🌐 [CORS DEBUG] Environment:', process.env.NODE_ENV || 'development');
+console.log('🌐 [CORS DEBUG] ALLOWED_ORIGINS env var:', process.env.ALLOWED_ORIGINS || 'NOT SET');
+console.log('🌐 [CORS DEBUG] Raw allowed origins string:', process.env.ALLOWED_ORIGINS);
+console.log('🌐 [CORS DEBUG] Split allowed origins array:', allowedOrigins);
+console.log('🌐 [CORS DEBUG] Array length:', allowedOrigins.length);
+allowedOrigins.forEach((origin, index) => {
+  console.log(`🌐 [CORS DEBUG]   [${index}]: "${origin.trim()}"`);
+});
+
+// Middleware
+console.log('🔧 [CORS DEBUG] Configuring CORS middleware...');
+console.log('🔧 [CORS DEBUG] CORS config object:');
+console.log('🔧 [CORS DEBUG] - origin:', allowedOrigins);
+console.log('🔧 [CORS DEBUG] - methods:', ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']);
+console.log('🔧 [CORS DEBUG] - allowedHeaders:', [
+  'Content-Type',
+  'Authorization',
+  'X-Requested-With',
+  'x-session-id',
+  'Accept-Language'
+]);
+console.log('🔧 [CORS DEBUG] - credentials:', true);
+
 app.use(
   cors({
-    origin: process.env.ALLOWED_ORIGINS
-      ? process.env.ALLOWED_ORIGINS.split(',')
-      : ['http://localhost:3000', 'http://localhost:5173'],
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
       'Content-Type',
@@ -120,12 +160,14 @@ app.use(
   })
 );
 
+console.log('✅ [CORS DEBUG] CORS middleware configured successfully');
+/* eslint-enable no-console */
+
 // Language middleware
 app.use((req, res, next) => {
   const supportedLanguages = ['en', 'fa', 'ar', 'zh'];
   const defaultLanguage = 'en';
 
-  // Get language from Accept-Language header or query parameter
   const acceptLanguage = req.headers['accept-language'];
   const queryLanguage = req.query.lang;
 
@@ -134,7 +176,7 @@ app.use((req, res, next) => {
   if (queryLanguage && supportedLanguages.includes(queryLanguage)) {
     language = queryLanguage;
   } else if (acceptLanguage) {
-    // Parse Accept-Language header (e.g., "en-US,en;q=0.9,fa;q=0.8")
+    // parse Accept-Language header (e.g., "en-US,en;q=0.9,fa;q=0.8")
     const languages = acceptLanguage
       .split(',')
       .map(lang => lang.split(';')[0].trim().split('-')[0])
@@ -158,6 +200,35 @@ app.use((req, res, next) => {
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Logging middleware with CORS debugging
+/* eslint-disable no-console */
+app.use((req, res, next) => {
+  const timestamp = new Date().toISOString();
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const origin = req.headers.origin;
+
+  console.log(
+    `[${timestamp}] ${req.method} ${req.url} - IP: ${ip}${origin ? ` - Origin: ${origin}` : ''}`
+  );
+
+  if (req.method === 'OPTIONS') {
+    console.log('🔄 [CORS DEBUG] Preflight request detected');
+    console.log('🔄 [CORS DEBUG] Origin:', origin);
+    console.log('🔄 [CORS DEBUG] Request method:', req.headers['access-control-request-method']);
+    console.log('🔄 [CORS DEBUG] Request headers:', req.headers['access-control-request-headers']);
+    console.log('🔄 [CORS DEBUG] Allowed origins:', allowedOrigins);
+    console.log('🔄 [CORS DEBUG] Origin in allowed list:', allowedOrigins.includes(origin));
+    console.log('🔄 [CORS DEBUG] Exact match check:');
+    allowedOrigins.forEach((allowedOrigin, index) => {
+      const exactMatch = allowedOrigin === origin;
+      console.log(`🔄 [CORS DEBUG]   [${index}] "${allowedOrigin}" === "${origin}": ${exactMatch}`);
+    });
+  }
+
+  next();
+});
+/* eslint-enable no-console */
 
 if (process.env.NODE_ENV !== 'production') {
   app.use((req, res, next) => {
@@ -234,6 +305,29 @@ const startServer = async () => {
       console.log(`   Cart: ${serverUrl}/api/cart`);
       // eslint-disable-next-line no-console
       console.log('');
+
+      // eslint-disable-next-line no-console
+      console.log('🌐 [STARTUP DEBUG] CORS Configuration Summary:');
+      // eslint-disable-next-line no-console
+      console.log(`🌐 [STARTUP DEBUG] - Environment: ${process.env.NODE_ENV || 'development'}`);
+      // eslint-disable-next-line no-console
+      console.log(
+        `🌐 [STARTUP DEBUG] - ALLOWED_ORIGINS env var: ${process.env.ALLOWED_ORIGINS || 'NOT SET'}`
+      );
+      // eslint-disable-next-line no-console
+      console.log(`🌐 [STARTUP DEBUG] - Final allowed origins: ${JSON.stringify(allowedOrigins)}`);
+      // eslint-disable-next-line no-console
+      console.log(`🌐 [STARTUP DEBUG] - CORS origins count: ${allowedOrigins.length}`);
+      // eslint-disable-next-line no-console
+      console.log(
+        `🌐 [STARTUP DEBUG] - Localhost 5173 included: ${allowedOrigins.includes('http://localhost:5173')}`
+      );
+      // eslint-disable-next-line no-console
+      console.log(
+        `🌐 [STARTUP DEBUG] - Production frontend included: ${allowedOrigins.some(origin => origin.includes('online-shop-six-livid.vercel.app'))}`
+      );
+      // eslint-disable-next-line no-console
+      console.log('🌐 [STARTUP DEBUG] CORS configuration is READY for requests!');
     });
 
     server.on('error', error => {
