@@ -5,6 +5,7 @@
   "description": "Ecommerce backend API built with Express",
   "main": "index.js",
   "scripts": {
+    "build": "prisma generate",
     "start": "node index.js",
     "dev": "./run_dev.sh start",
     "dev:stop": "./run_dev.sh stop",
@@ -22,6 +23,7 @@
     "commitlint": "commitlint --from=HEAD~1 --to=HEAD --verbose",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky",
+    "postinstall": "prisma generate",
     "precommit": "lint-staged",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",

@@ -19,6 +19,9 @@ const sleep = promisify(setTimeout);
 let prismaInstance = null;
 
 const createPrismaClient = () => {
+  // eslint-disable-next-line no-console
+  console.log('🔧 [PRODUCTION DEBUG] Creating PrismaClient with config...');
+
   const config = {
     log:
       process.env.NODE_ENV === 'production'
@@ -31,7 +34,21 @@ const createPrismaClient = () => {
     }
   };
 
-  return new PrismaClient(config);
+  // eslint-disable-next-line no-console
+  console.log('🔧 [PRODUCTION DEBUG] PrismaClient config:', JSON.stringify(config, null, 2));
+
+  const client = new PrismaClient(config);
+
+  // eslint-disable-next-line no-console
+  console.log('🔧 [PRODUCTION DEBUG] PrismaClient created, checking properties...');
+  // eslint-disable-next-line no-console
+  console.log('🔧 [PRODUCTION DEBUG] Has cart:', 'cart' in client);
+  // eslint-disable-next-line no-console
+  console.log('🔧 [PRODUCTION DEBUG] Has user:', 'user' in client);
+  // eslint-disable-next-line no-console
+  console.log('🔧 [PRODUCTION DEBUG] Constructor:', client.constructor.name);
+
+  return client;
 };
 
 const getPrisma = () => {
