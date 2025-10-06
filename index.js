@@ -103,7 +103,59 @@ const setupSignalHandlers = () => {
   });
 };
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.ALLOWED_ORIGINS
+      ? process.env.ALLOWED_ORIGINS.split(',')
+      : ['http://localhost:3000', 'http://localhost:5173'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'x-session-id',
+      'Accept-Language'
+    ],
+    credentials: true
+  })
+);
+
+// Language middleware
+app.use((req, res, next) => {
+  const supportedLanguages = ['en', 'fa', 'ar', 'zh'];
+  const defaultLanguage = 'en';
+
+  // Get language from Accept-Language header or query parameter
+  const acceptLanguage = req.headers['accept-language'];
+  const queryLanguage = req.query.lang;
+
+  let language = defaultLanguage;
+
+  if (queryLanguage && supportedLanguages.includes(queryLanguage)) {
+    language = queryLanguage;
+  } else if (acceptLanguage) {
+    // Parse Accept-Language header (e.g., "en-US,en;q=0.9,fa;q=0.8")
+    const languages = acceptLanguage
+      .split(',')
+      .map(lang => lang.split(';')[0].trim().split('-')[0])
+      .filter(lang => supportedLanguages.includes(lang));
+
+    if (languages.length > 0) {
+      language = languages[0];
+    }
+  }
+
+  req.language = language;
+  req.isRTL = language === 'ar' || language === 'fa';
+
+  // Add language to response headers
+  res.setHeader('Content-Language', language);
+  res.setHeader('X-Language', language);
+  res.setHeader('X-RTL', req.isRTL.toString());
+
+  next();
+});
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
