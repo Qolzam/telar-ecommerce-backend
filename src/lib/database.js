@@ -14,28 +14,35 @@ const sleep = promisify(setTimeout);
 
 /**
  * Global Prisma client instance
- * Uses singleton pattern to prevent multiple instances in development
+ * Uses singleton pattern with lazy initialization and connection recovery
  */
-const prisma = (() => {
-  if (process.env.NODE_ENV === 'production') {
-    return new PrismaClient({
-      log: ['error', 'warn'],
-      datasources: {
-        db: {
-          url: process.env.DATABASE_URL
-        }
+let prismaInstance = null;
+
+const createPrismaClient = () => {
+  const config = {
+    log:
+      process.env.NODE_ENV === 'production'
+        ? ['error', 'warn']
+        : ['query', 'info', 'warn', 'error'],
+    datasources: {
+      db: {
+        url: process.env.DATABASE_URL
       }
-    });
-  } else {
-    // In development, use a global variable so the Prisma Client isn't constantly re-instantiated
-    if (!global.prisma) {
-      global.prisma = new PrismaClient({
-        log: ['query', 'info', 'warn', 'error']
-      });
     }
-    return global.prisma;
+  };
+
+  return new PrismaClient(config);
+};
+
+const getPrisma = () => {
+  if (!prismaInstance) {
+    prismaInstance = createPrismaClient();
   }
-})();
+  return prismaInstance;
+};
+
+// Create the prisma instance immediately and export it directly
+const prisma = getPrisma();
 
 /**
  * Test database connection with retry logic
@@ -47,7 +54,8 @@ export const testConnection = async () => {
 
   while (retryCount < maxRetries) {
     try {
-      await prisma.$connect();
+      const client = getPrisma();
+      await client.$connect();
       // eslint-disable-next-line no-console
       console.log('✅ Database connected successfully');
       return true;
@@ -58,6 +66,9 @@ export const testConnection = async () => {
         `❌ Database connection failed (attempt ${retryCount}/${maxRetries}):`,
         error.message
       );
+
+      // Reset instance on connection failure
+      prismaInstance = null;
 
       if (retryCount < maxRetries) {
         // Wait before retrying (exponential backoff)
@@ -78,11 +89,20 @@ export const testConnection = async () => {
  */
 export const isConnectionHealthy = async () => {
   try {
-    await prisma.$queryRaw`SELECT 1`;
+    const client = getPrisma();
+    await client.$queryRaw`SELECT 1`;
     return true;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('🔍 Database health check failed:', error.message);
+
+    // If connection is closed, reset the instance to force reconnection
+    if (error.message.includes('Closed') || error.message.includes('connection')) {
+      // eslint-disable-next-line no-console
+      console.log('🔄 Resetting Prisma client due to connection error');
+      prismaInstance = null;
+    }
+
     return false;
   }
 };
@@ -92,9 +112,11 @@ export const isConnectionHealthy = async () => {
  */
 const gracefulShutdown = async () => {
   try {
-    await prisma.$disconnect();
-    // eslint-disable-next-line no-console
-    console.log('🔌 Database disconnected gracefully');
+    if (prismaInstance) {
+      await prismaInstance.$disconnect();
+      // eslint-disable-next-line no-console
+      console.log('🔌 Database disconnected gracefully');
+    }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error during database disconnection:', error);
@@ -103,12 +125,5 @@ const gracefulShutdown = async () => {
 
 process.on('SIGINT', gracefulShutdown);
 process.on('SIGTERM', gracefulShutdown);
-
-// Ensure prisma is always defined before export
-if (!prisma) {
-  // eslint-disable-next-line no-console
-  console.error('❌ Prisma client failed to initialize');
-  process.exit(1);
-}
 
 export default prisma;
