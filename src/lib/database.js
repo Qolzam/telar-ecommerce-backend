@@ -36,13 +36,27 @@ const createPrismaClient = () => {
 
 const getPrisma = () => {
   if (!prismaInstance) {
+    // eslint-disable-next-line no-console
+    console.log('🔧 [PRODUCTION DEBUG] Creating new Prisma client instance');
     prismaInstance = createPrismaClient();
+    // eslint-disable-next-line no-console
+    console.log('✅ [PRODUCTION DEBUG] Prisma client created:', !!prismaInstance);
+    // eslint-disable-next-line no-console
+    console.log('🔍 [PRODUCTION DEBUG] Prisma client type:', typeof prismaInstance);
   }
   return prismaInstance;
 };
 
 // Create the prisma instance immediately and export it directly
+// eslint-disable-next-line no-console
+console.log('🚀 [PRODUCTION DEBUG] Initializing prisma export...');
+// eslint-disable-next-line no-console
+console.log('📦 [PRODUCTION DEBUG] Database module version: DIRECT_EXPORT_V2');
 const prisma = getPrisma();
+// eslint-disable-next-line no-console
+console.log('✅ [PRODUCTION DEBUG] Prisma exported:', !!prisma, typeof prisma);
+// eslint-disable-next-line no-console
+console.log('🔍 [PRODUCTION DEBUG] Prisma has cart property:', 'cart' in prisma);
 
 /**
  * Test database connection with retry logic

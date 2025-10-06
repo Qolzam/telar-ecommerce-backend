@@ -1,9 +1,31 @@
 import prisma from '../lib/database.js';
 
+// eslint-disable-next-line no-console
+console.log('🛒 [PRODUCTION DEBUG] CartService importing prisma...');
+// eslint-disable-next-line no-console
+console.log('📦 [PRODUCTION DEBUG] CartService version: DEEP_DEBUG_V1');
+// eslint-disable-next-line no-console
+console.log('🛒 [PRODUCTION DEBUG] Prisma type:', typeof prisma);
+// eslint-disable-next-line no-console
+console.log('🛒 [PRODUCTION DEBUG] Prisma defined:', !!prisma);
+// eslint-disable-next-line no-console
+console.log('🛒 [PRODUCTION DEBUG] Prisma has cart:', 'cart' in prisma);
+
 // Safety check for prisma initialization
 if (!prisma) {
+  // eslint-disable-next-line no-console
+  console.error('❌ [PRODUCTION DEBUG] Prisma client is undefined!');
   throw new Error('Prisma client not initialized');
 }
+
+if (!('cart' in prisma)) {
+  // eslint-disable-next-line no-console
+  console.error('❌ [PRODUCTION DEBUG] Prisma client missing cart property!');
+  throw new Error('Prisma client missing cart property');
+}
+
+// eslint-disable-next-line no-console
+console.log('✅ [PRODUCTION DEBUG] CartService prisma validation passed');
 
 /**
  * Cart Service
@@ -14,6 +36,20 @@ const cartService = {
    * Get or create cart for user or session
    */
   async getOrCreateCart(userId = null, sessionId = null) {
+    // eslint-disable-next-line no-console
+    console.log(
+      '🛒 [PRODUCTION DEBUG] getOrCreateCart called with userId:',
+      !!userId,
+      'sessionId:',
+      !!sessionId
+    );
+    // eslint-disable-next-line no-console
+    console.log('🛒 [PRODUCTION DEBUG] prisma object:', typeof prisma);
+    // eslint-disable-next-line no-console
+    console.log('🛒 [PRODUCTION DEBUG] prisma.cart:', typeof prisma?.cart);
+    // eslint-disable-next-line no-console
+    console.log('🛒 [PRODUCTION DEBUG] prisma.cart.findFirst:', typeof prisma?.cart?.findFirst);
+
     if (!userId && !sessionId) {
       throw new Error('Either userId or sessionId is required');
     }
@@ -21,6 +57,8 @@ const cartService = {
     let cart;
 
     if (userId) {
+      // eslint-disable-next-line no-console
+      console.log('🛒 [PRODUCTION DEBUG] Using userId path');
       cart = await prisma.cart.findFirst({
         where: { userId },
         include: {
@@ -36,6 +74,8 @@ const cartService = {
         }
       });
     } else if (sessionId) {
+      // eslint-disable-next-line no-console
+      console.log('🛒 [PRODUCTION DEBUG] Using sessionId path');
       cart = await prisma.cart.findFirst({
         where: { sessionId },
         include: {
